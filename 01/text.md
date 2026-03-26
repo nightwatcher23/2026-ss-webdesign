@@ -1,5 +1,4 @@
-
-Geschichte des World Wide Web
+Die Geschichte des World Wide Web
 
 Entstehung und Entwicklung
 
