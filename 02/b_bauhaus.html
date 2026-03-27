@@ -7,8 +7,158 @@
 </head>
 <body>
 
+    <style>
+        .poster {
+            background: #f8dbbb;
+            width: 189mm;
+            height: 267.3mm;
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            align-items:center;
+            justify-content: center;
+            margin: 0;
+            font-family: 'Helvetica', Arial, sans-serif;
+        }
+        .circle {
+            border-radius: 50%;
+            width: 37.8mm;
+            height: 37.8mm;
+            position: absolute;
+        }
+        .square {
+            width: 37.8mm;
+            height: 37.8mm;
+            position:absolute;
+        }
+        .rectangleUp {
+            width: 37.8mm;
+            height: 75.6mm;
+            position:absolute;
+        }
+        .rectangleDown {
+            width: 75.6mm;
+            height: 37.8mm;
+            position: absolute;
+        }
+        .red {
+            background: #e02d26;
+        }
+        .blue {
+            background: #0065bd;
+        }
+        .yellow {
+            background: #ffb700;
+        }
+        .black {
+            background: black;
+        }
+        .R1{
+            left: 55mm;
+            top: 20mm;
+        }
+        .R2{
+            top: 95.5mm;
+            left: 55mm;
+        }
+        .R3{
+            top: 57.75mm;
+            right: 20.5mm;
+        }
+        .R4{
+            right: 20.5mm;
+            bottom: 96.25mm;
+        }
+        
+        .Kreis1{
+            top: 57.75mm;
+            left: 17.2mm;
+        }
+         .Kreis2{
+            bottom: 58.5mm;
+            left: 55.25mm;
+        }
+        .Kreis3{
+            top: 19.8mm;
+            right: 58.2mm;
+        }
+        
+        .Q1{
+            bottom: 96.25mm;
+            right: 58.2mm;
+        }
+        .Q2{
+            bottom: 58.5mm;
+            right: 58.2mm;
+        }
+       
+        .Q3{
+            left: 17.5mm;
+            bottom: 58.5mm;
+        }
+
+        .title{
+            font-size: 15mm;
+            letter-spacing: 2px;
+            font-weight: 900;
+            text-transform: uppercase;
+            position:absolute;
+            text-align: center;
+            bottom: 35mm;
+        }
+
+        .otherText{
+            letter-spacing: 2px;
+            font-weight: 400;
+            position:absolute;
+        }
+        .year{
+            font-size: 10mm;
+            right: 10mm;
+            bottom: 20mm;
+        }
+        .timeplace{
+            font-size: 5mm;
+            right: 10mm;
+            bottom: 13mm;
+        }
+        .description{
+            font-size: 3mm;
+            left: 10mm;
+            bottom: 8mm;
+        }
+
+    </style>
+
     <div class="poster">
+        <div class="circle red Kreis1"></div>
+        <div class="circle red Kreis2"></div>
+        <div class="circle blue Kreis3"></div>
+
+        <div class="square red Q1"></div>
+        <div class="square black Q2"></div>
+        <div class="square blue Q3"></div>
+
+        <div class="rectangleUp yellow R1"></div>
+        <div class="rectangleDown yellow R2"></div>
+        <div class="rectangleDown red R3"></div>
+        <div class="rectangleUp black R4"></div>
+
+        <div class="title"> 
+            <strong>Bauhaus</strong>
+        </div>
+
+        <div class="otherText year">
+            '23
+        </div>
+        <div class="otherText timeplace">
+            July - Sept. Weimar
+        </div>
+        <div class="otherText description">
+            Bauhaus - School of design, architecture and applied arts
+        </div>
     </div>
+    
 
 </body>
 </html>

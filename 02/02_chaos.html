@@ -21,8 +21,7 @@
         .container {
             background-color: #ddd;
             width: 100%;
-            /* PROBLEM 1: Ohne box-sizing: border-box sprengen padding und border die 100% Breite.
-               Der Container ragt rechts aus dem Bildschirmrand heraus! */
+            box-sizing: border-box;
             padding: 40px;
             border: 10px solid #333;
         }
@@ -30,8 +29,8 @@
         .text-block {
             background-color: #ffcccc;
             border: 2px solid red;
-            /* PROBLEM 2: Diese Textblöcke fließen ineinander, weil sie als <span> 
-               standardmäßig "inline" sind. Sie brauchen Block-Verhalten und Außenabstand! */
+            display: block;
+            margin: 10px;
         }
 
         .button {
@@ -39,8 +38,8 @@
             color: white;
             font-weight: bold;
             text-align: center;
-            /* PROBLEM 3: Diese Buttons sollen nebeneinander stehen, sind als <div> 
-               aber standardmäßig "block"-Elemente. Sie brauchen Innen- und Außenabstände! */
+            padding: 10px;
+            margin: 10px;
         }
 
         .secret {
@@ -49,12 +48,13 @@
             font-size: 24px;
             font-weight: bold;
             border: 5px dashed red;
-            /* PROBLEM 4: Dieses Element soll komplett aus dem Layout verschwinden! */
+            display: none;
         }
 
         /* --- DEIN CODE STARTET HIER --- */
 
         /* 1. Füge den universellen Selektor (*) für border-box hinzu */
+        
 
 
         /* 2. Repariere .text-block (Tipp: display, margin, padding) */
