@@ -109,14 +109,45 @@
     </div>
 
     <script>
-        function add(){
-            alert("hi");
+
+        //Methode fürs Hinzufügen eines Eintrags
+        function add()
+        {
+            //Eingabe übers Text-Feld speichern
+            const input = document.getElementById("taskInput");
+            //Erstellung einer Liste
+            const list = document.getElementById("taskList");
+
+            //Eingabe 
+            const newTask = input.value;
+            if(newTask)
+            {
+
+                const allItems = list.children;
+
+                for (let i=0; i < allItems.length; i++)
+                {
+                    if (allItems[i].innerHTML == newTask)
+                    {
+                        alert("Ein Eintrag mit dem Namen " + newTask + " existiert bereits.")
+                        return;
+                    }
+                }
+
+                const newItem = document.createElement("li");
+                newItem.innerHTML = newTask;
+
+                list.append(newItem);
+            }
+
+            input.value = null;
+            //alert(newTask);
         }
 
         const btn = document.getElementById("addBtn");
 
         btn.addEventListener('click', add);
-        
+
         // ============================================================
         // EUER CODE HIER:
         //
