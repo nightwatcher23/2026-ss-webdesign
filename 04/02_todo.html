@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aufgabe 2 — To-Do-Liste</title>
+    <style>
+        /* ============================================================
+           AUFGABE 2: To-Do-Liste mit DOM-Manipulation
+
+           Hintergrund:
+           getElementById, createElement und appendChild anwenden,
+           um statisches HTML dynamisch zu machen.
+
+           Anforderungen:
+           1. Wert aus dem Eingabefeld auslesen, wenn der Button
+              geklickt wird.
+           2. Neues <li>-Element mit document.createElement erstellen.
+           3. innerText des Elements auf den Eingabewert setzen.
+           4. Element mit appendChild an die Liste anhängen.
+           5. Bonus: Eingabefeld nach dem Hinzufügen leeren.
+           ============================================================ */
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #faf9f7;
+            color: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 4rem 2rem;
+        }
+
+        .container {
+            max-width: 480px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        #taskInput {
+            flex: 1;
+            padding: 0.6rem 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        #taskInput:focus {
+            border-color: #555;
+        }
+
+        #addBtn {
+            padding: 0.6rem 1.25rem;
+            font-size: 1rem;
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        #addBtn:hover {
+            background: #333;
+        }
+
+        #taskList {
+            list-style: none;
+        }
+
+        #taskList li {
+            padding: 0.6rem 0.75rem;
+            border-bottom: 1px solid #eee;
+            font-size: 1rem;
+        }
+
+        #taskList li:first-child {
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do-Liste</h1>
+
+        <div class="input-row">
+            <input type="text" id="taskInput" placeholder="Neue Aufgabe …">
+            <button id="addBtn">Hinzufügen</button>
+        </div>
+
+        <ul id="taskList">
+            <!-- Hier werden die Aufgaben dynamisch eingefügt -->
+        </ul>
+    </div>
+
+    <script>
+        // ============================================================
+        // EUER CODE HIER:
+        //
+        // 1. Referenzen auf die Elemente holen:
+        //    - const input = document.getElementById(...)
+        //    - const button = document.getElementById(...)
+        //    - const list = document.getElementById(...)
+        //
+        // 2. Event-Listener auf den Button setzen:
+        //    button.addEventListener('click', function () { ... })
+        //
+        // 3. Innerhalb der Funktion:
+        //    a) Wert aus input.value lesen
+        //    b) Prüfen, ob der Wert nicht leer ist
+        //    c) Neues <li> mit document.createElement('li') erstellen
+        //    d) li.innerText = ... setzen
+        //    e) list.appendChild(li) aufrufen
+        //    f) Bonus: input.value = '' zum Leeren des Feldes
+        //
+        // ============================================================
+
+
+    </script>
+</body>
+</html>

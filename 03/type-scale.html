@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type Scale Calculator</title>
+    <style>
+        /* ============================================================
+           AUFGABE: Type Scale Calculator mit CSS-Variablen
+
+           1. Definiert in :root:  --base (16px)  und  --ratio (1.25)
+           2. Berechnet --h6 bis --h1 mit calc(), z.B.:
+                --h6: calc(var(--base) * var(--ratio))
+                --h5: calc(var(--h6)  * var(--ratio))  … usw.
+           3. Setzt font-size bei h1–h6 und font-size am body.
+           4. Micro-Typography:
+                h1 → line-height: 1.0  + negatives letter-spacing
+                p  → line-height: 1.5
+           5. Optional: Suchen Sie sich eine schöne Schriftartenkombo aus Google Fonts und binden Sie sie ein.
+           ============================================================ */
+
+        :root {
+            
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Georgia, serif;
+            background: #faf9f7;
+            color: #1a1a1a;
+        }
+
+        .page { 
+            max-width: 740px; 
+            margin: 0 auto; 
+        }
+
+        h1 {
+            
+        }
+
+        h2 { 
+
+         }
+        h3 { 
+            
+         }
+        h4 {
+            
+         }
+        h5 { 
+
+         }
+        h6 { 
+
+         }
+
+        p {
+            
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page">
+
+        <h1>Harmonische Proportionen durch mathematische Skalen</h1>
+        <h2>Was ist eine Type Scale?</h2>
+        <p>
+            Eine Type Scale ist ein System aufeinander abgestimmter Schriftgrößen,
+            die durch einen festen Faktor miteinander verbunden sind. Je größer
+            der Faktor, desto dramatischer der Größenunterschied zwischen den Stufen.
+        </p>
+
+        <h3>CSS Custom Properties</h3>
+        <p>
+            CSS-Variablen werden im <code>:root</code>-Selektor definiert und stehen
+            im gesamten Dokument zur Verfügung. In Kombination mit <code>calc()</code>
+            lässt sich so eine vollständig variable Type Scale aufbauen.
+        </p>
+
+        <h4>Vorteile des Ansatzes</h4>
+        <p>
+            Ändert man nur <code>--base</code> oder <code>--ratio</code>,
+            passen sich alle Schriftgrößen automatisch an.
+        </p>
+
+        <h5>Micro-Typography</h5>
+        <p>
+            Große Überschriften wirken kompakter mit <code>line-height</code> nahe 1.0
+            und leicht negativem <code>letter-spacing</code>. Fließtext benötigt
+            mindestens 1.4–1.6 für komfortable Lesbarkeit.
+        </p>
+
+        <h6>Hintergrundnotiz</h6>
+        <p>
+            Das Verhältnis 1.25 (Major Third) erzeugt deutlich sichtbare,
+            aber nicht übertriebene Größenunterschiede – ideal für Webprojekte.
+        </p>
+
+    </div>
+
+</body>
+</html>

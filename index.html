@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Design SS 2026</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Mono', monospace;
+      background: #f7f7f5;
+      color: #1a1a1a;
+      min-height: 100vh;
+      padding: 4rem 2rem;
+    }
+
+    header {
+      margin-bottom: 3rem;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    ol {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+      gap: 0.75rem;
+      max-width: 48rem;
+    }
+
+    li a, li span {
+      display: block;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      text-decoration: none;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      background: #fff;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    li a:hover {
+      border-color: #999;
+      background: #f0f0ee;
+    }
+
+    li span {
+      color: #bbb;
+      border-color: #eee;
+      background: transparent;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Web Design &mdash; SS 2026</h1>
+  </header>
+  <ol>
+    <li><a href="01/">01</a></li>
+    <li><a href="02/">02</a></li>
+    <li><a href="03/">03</a></li>
+    <li><a href="04/">04</a></li>
+    <li><span>05</span></li>
+    <li><span>06</span></li>
+    <li><span>07</span></li>
+    <li><span>08</span></li>
+    <li><span>09</span></li>
+    <li><span>10</span></li>
+    <li><span>11</span></li>
+    <li><span>12</span></li>
+  </ol>
+</body>
+</html>

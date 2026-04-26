@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>01 — Web Design SS 2026</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Mono', monospace;
+      background: #f7f7f5;
+      color: #1a1a1a;
+      min-height: 100vh;
+      padding: 4rem 2rem;
+    }
+
+    nav {
+      margin-bottom: 2.5rem;
+    }
+
+    nav a {
+      font-size: 0.8rem;
+      color: #888;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    nav a:hover { color: #1a1a1a; }
+
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 2rem;
+    }
+
+    ul {
+      list-style: none;
+      max-width: 32rem;
+    }
+
+    li + li { margin-top: 0.4rem; }
+
+    li a {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      text-decoration: none;
+      color: #1a1a1a;
+      border: 1px solid transparent;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    li a:hover {
+      border-color: #ddd;
+      background: #fff;
+    }
+
+    li a .ext {
+      font-size: 0.75rem;
+      color: #aaa;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <nav><a href="../">← Index</a></nav>
+  <h1>Week 01</h1>
+  <ul>
+    <li><a href="www.html"><span>www.html</span><span class="ext">html</span></a></li>
+    <li><a href="text.md"><span>text.md</span><span class="ext">md</span></a></li>
+  </ul>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aufgabe 3 — Load More</title>
+    <style>
+        /* ============================================================
+           AUFGABE 3: Load More mit Arrays, Objekten & DOM-Rendering
+
+           Hintergrund:
+           Arbeiten mit Arrays, Objekten und dynamischem Rendering
+           von Mock-Daten.
+
+           Anforderungen:
+           1. Funktion schreiben, die jeweils die nächsten 3 Objekte
+              aus dem Array als Teaser-Cards an <main> anhängt.
+           2. "Mehr laden"-Button triggert diese Funktion.
+           3. Wenn alle Artikel geladen sind, wird der Button
+              ausgeblendet (display = 'none') oder deaktiviert.
+           4. Bonus (Infinite Scroll): Button weglassen und stattdessen
+              per window.onscroll beim Erreichen des Seitenendes laden.
+           ============================================================ */
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #faf9f7;
+            color: #1a1a1a;
+            min-height: 100vh;
+            padding: 3rem 2rem 6rem;
+        }
+
+        header {
+            max-width: 720px;
+            margin: 0 auto 2rem;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        #cardContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: box-shadow 0.15s;
+        }
+
+        .card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .btn-wrap {
+            text-align: center;
+            max-width: 720px;
+            margin: 2rem auto 0;
+        }
+
+        #loadMoreBtn {
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        #loadMoreBtn:hover {
+            background: #333;
+        }
+
+        #loadMoreBtn:disabled {
+            background: #aaa;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Artikel-Übersicht</h1>
+    </header>
+
+    <main id="cardContainer">
+        <!-- Hier werden die Teaser-Cards dynamisch eingefügt -->
+    </main>
+
+    <div class="btn-wrap">
+        <button id="loadMoreBtn">Mehr laden</button>
+    </div>
+
+    <script>
+        // ============================================================
+        // MOCK-DATEN — 10 Artikel-Objekte
+        // ============================================================
+        const articles = [
+            { title: "Artikel 1",  text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+            { title: "Artikel 2",  text: "Sed do eiusmod tempor incididunt ut labore et dolore magna." },
+            { title: "Artikel 3",  text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco." },
+            { title: "Artikel 4",  text: "Duis aute irure dolor in reprehenderit in voluptate velit." },
+            { title: "Artikel 5",  text: "Excepteur sint occaecat cupidatat non proident, sunt in culpa." },
+            { title: "Artikel 6",  text: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur." },
+            { title: "Artikel 7",  text: "Neque porro quisquam est, qui dolorem ipsum quia dolor." },
+            { title: "Artikel 8",  text: "Quis autem vel eum iure reprehenderit qui in ea voluptate." },
+            { title: "Artikel 9",  text: "At vero eos et accusamus et iusto odio dignissimos ducimus." },
+            { title: "Artikel 10", text: "Nam libero tempore, cum soluta nobis est eligendi optio." }
+        ];
+
+        // Wie viele Artikel pro Klick geladen werden
+        const BATCH_SIZE = 3;
+
+
+        // ============================================================
+        // EUER CODE HIER:
+        //
+        // 1. Variable anlegen, die speichert, wie viele Artikel
+        //    bereits angezeigt wurden (z.B. let currentIndex = 0).
+        //
+        // 2. Referenzen holen:
+        //    - const container = document.getElementById('cardContainer')
+        //    - const btn = document.getElementById('loadMoreBtn')
+        //
+        // 3. Funktion loadMore() schreiben:
+        //    a) Die nächsten BATCH_SIZE Artikel aus dem Array holen
+        //       z.B. mit articles.slice(currentIndex, currentIndex + BATCH_SIZE)
+        //    b) Für jedes Objekt ein <article>-Element erstellen:
+        //       - const card = document.createElement('article')
+        //       - card.classList.add('card')
+        //       - card.innerHTML = `<h2>${obj.title}</h2><p>${obj.text}</p>`
+        //       - container.appendChild(card)
+        //    c) currentIndex erhöhen
+        //    d) Prüfen: wenn currentIndex >= articles.length →
+        //       btn.style.display = 'none'  (oder btn.disabled = true)
+        //
+        // 4. Event-Listener auf den Button:
+        //    btn.addEventListener('click', loadMore)
+        //
+        // 5. Bonus – Infinite Scroll (statt Button):
+        //    window.addEventListener('scroll', function () {
+        //        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+        //            loadMore();
+        //        }
+        //    })
+        //
+        // ============================================================
+
+
+    </script>
+</body>
+</html>
