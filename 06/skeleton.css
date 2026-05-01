@@ -1,0 +1,122 @@
+/* ============================================================
+   AUFGABE: Skeleton Screen mit Fetch API
+
+   Hintergrund:
+   Echte API-Aufrufe dauern. Perceived Performance lässt sich
+   durch visuelles Feedback während der Ladezeit verbessern.
+
+   Anforderungen:
+   1. Asynchrone Funktion async function loadUser() schreiben.
+   2. Per JavaScript die CSS-Klasse .loading schalten, die das
+      Profil-Kärtchen in ein pulsierendes Skeleton verwandelt.
+   3. await fetch('https://randomuser.me/api/') zum Laden nutzen.
+      Optional: künstliche Verzögerung mit
+      await new Promise(r => setTimeout(r, 2000))
+   4. Skeleton-Klasse entfernen und DOM mit echtem Namen
+      und Bild befüllen.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #faf9f7;
+    color: #1a1a1a;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 4rem 2rem;
+}
+
+.container {
+    max-width: 420px;
+    width: 100%;
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+/* ---- Profil-Kärtchen ---- */
+
+.card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #e0e0e0;
+}
+
+.name {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.location {
+    display: block;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* ---- Skeleton-Zustand ---- */
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+}
+
+.loading .avatar,
+.loading .name,
+.loading .location {
+    animation: pulse 1.5s ease-in-out infinite;
+    background: #e0e0e0;
+    color: transparent;
+    border-radius: 4px;
+}
+
+.loading .avatar {
+    border-radius: 50%;
+}
+
+.loading .name {
+    width: 160px;
+    height: 1.1rem;
+}
+
+.loading .location {
+    width: 110px;
+    height: 0.9rem;
+}
+
+/* ---- Button ---- */
+
+#reloadBtn {
+    padding: 0.65rem 1.5rem;
+    font-size: 1rem;
+    background: #1a1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+#reloadBtn:hover {
+    background: #333;
+}
