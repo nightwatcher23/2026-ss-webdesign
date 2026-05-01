@@ -6,6 +6,32 @@
 //    - const avatar   = document.getElementById('avatar')
 //    - const nameEl   = document.getElementById('name')
 //    - const locationEl = document.getElementById('location')
+
+const card = document.getElementById('profileCard')
+const avatar = document.getElementById('avatar')
+const nameEl = document.getElementById('name')
+const locationEl = document.getElementById('location')
+
+async function loadUser() {
+    card.classList.add('loading')
+    avatar.src = ''
+    await new Promise(r => setTimeout(r, 2000))
+
+    const response = await fetch('https://randomuser.me/api/')
+    const data = await response.json()
+    const user = data.results[0]
+
+    avatar.src = user.picture.large
+    nameEl.textContent = user.name.first + ' ' + user.name.last
+    locationEl.textContent = user.location.city + ', ' + user.name.country
+
+    card.classList.remove('loading')
+}
+
+const btn = document.getElementById('reloadBtn')
+btn.addEventListener('click', loadUser)
+
+loadUser()
 //
 // 2. Async-Funktion loadUser() schreiben:
 //
