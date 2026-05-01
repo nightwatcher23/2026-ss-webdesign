@@ -1,0 +1,11 @@
+button{
+    background-color: blueviolet;
+    border-radius: 5px;
+    font-style: italic;
+    font-size: large;
+    color: white;
+    text-align: center;
+    padding: 20px;
+
+    transition: transform 1s cubic-bezier(0.4, 1, 0.5, 1);
+}
