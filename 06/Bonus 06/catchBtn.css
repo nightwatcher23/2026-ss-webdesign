@@ -6,6 +6,21 @@ button{
     color: white;
     text-align: center;
     padding: 20px;
+    display: inline-block;
 
-    transition: transform 1s cubic-bezier(0.4, 1, 0.5, 1);
+    transition: transform 2s cubic-bezier(0.15, 1, 0.5, 1), background-color 0.6s ease;
+    
+}
+
+button.frightened{
+    background-color: grey;
+    padding: 10px;
+    opacity: 60%;
+    font-size: medium;
+}
+
+button.curious{
+    background-color: green;
+    padding: 15px;
+    font-size: medium;
 }

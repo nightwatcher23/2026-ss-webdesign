@@ -11,7 +11,7 @@ let targetY = 0;
 
 let speed = 0.001;
 let distance = 0;
-const maxDistance = 1000;
+const maxDistance = 20;
 
 let didMouseTouch = false;
 
@@ -22,6 +22,7 @@ let stopTimeout;
 document.addEventListener('mousemove', (e) => {
     console.log('stop moving')
     isMouseMoving = true;
+    btn.classList.remove('curious');
 
     mouseX = e.clientX;
     mouseY = e.clientY;
@@ -32,6 +33,8 @@ document.addEventListener('mousemove', (e) => {
         if (!didMouseTouch) {
             console.log('coming closer')
             isMouseMoving = false;
+            btn.classList.remove('frightened');
+            btn.classList.add('curious');
 
             targetX = mouseX;
             targetY = mouseY;
@@ -53,6 +56,8 @@ function flyYouFool () {
     const maxY = window.innerHeight - btn.offsetHeight;
 
     didMouseTouch = true;
+    btn.classList.remove('curious');
+    btn.classList.add('frightened');
 
     targetX = Math.random() * maxX;
     targetY = Math.random() * maxY;
@@ -77,7 +82,8 @@ function animate () {
         x += (targetX - x) * speed;
         y += (targetY - y) * speed;
 
-        if( distance <= maxDistance) {
+        if( distance >= maxDistance) {
+            console.log('far enough')
             didMouseTouch = false;
         }
         
