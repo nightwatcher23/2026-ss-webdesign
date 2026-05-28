@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<!--
+  OPTIMIZED VERSION: see comments for what was improved
+  =====================================================================
+  Fix 1  — preconnect hints added for faster Google Fonts negotiation
+  Fix 2  — render-blocking script moved to end of <body> with defer
+  Fix 3  — explicit width + height on all four images (eliminates CLS)
+  Fix 4  — fetchpriority="high" on hero LCP image;
+            loading="lazy" on the three below-fold card images
+  Fix 5  — hero image correctly sized (1200×500, not 2400×1000)
+  Fix 6  — critical CSS inlined in <style>; non-critical CSS loaded
+            asynchronously via <link rel="preload" as="style">
+  Fix 7  — promo bar is static HTML (no JS injection = no layout shift)
+  Fix 8  — external links use rel="noopener noreferrer" (security + Best Practices)
+  =====================================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Render Blockers</title>
+
+  <!-- FIX 1: preconnect hints let the browser open connections to the font
+       servers early, before the font <link> is parsed -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FIX 6: only critical above-the-fold styles are inlined here so the
+       browser can render the hero without waiting for any external stylesheet -->
+  <style>
+    :root {
+      --bg:      #0d0d0d;
+      --surface: #1a1a1a;
+      --accent:  #e63946;
+      --text:    #f0f0f0;
+      --muted:   #888888;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+    }
+
+    .hero {
+      position: relative;
+      height: 500px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.4);
+    }
+
+    .hero-content { position: relative; z-index: 1; padding: 0 1rem; }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--muted);
+      margin-top: 1rem;
+    }
+
+    /* FIX 7: critical style for the promo bar — inlined so it renders with zero flash */
+    .promo-bar {
+      background: var(--accent);
+      color: #fff;
+      padding: 1.5rem 2rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: .02em;
+    }
+  </style>
+
+  <!-- FIX 6: non-critical styles are preloaded and applied asynchronously —
+       they do not block rendering of above-the-fold content -->
+  <link rel="preload" as="style" href="styles.css" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="styles.css"></noscript>
+</head>
+<body>
+
+  <header class="hero">
+    <!-- FIX 5: correctly sized hero image (1200×500 instead of 2400×1000) -->
+    <!-- FIX 3: explicit width + height let the browser reserve the right
+         amount of space before the image loads, preventing layout shift (CLS) -->
+    <!-- FIX 4: fetchpriority="high" signals this is the LCP image so the
+         browser prioritises its download above other resources -->
+    <img src="https://picsum.photos/1200/500"
+         alt="The Render Blockers live on stage"
+         width="1200" height="500"
+         fetchpriority="high">
+    <div class="hero-content">
+      <h1>The <span>Render</span> Blockers</h1>
+      <p>We drop frames and break hearts since 1999.</p>
+    </div>
+  </header>
+
+  <!-- FIX 7: promo content is static HTML — painted immediately as part of normal flow,
+       no JavaScript required, no layout shift (contrast with slow.html: JS-injected 900 ms
+       after load, shunting the entire page body downward mid-scroll) -->
+  <div class="promo-bar">PRE-SALE ENDS TONIGHT &mdash; Use code RENDERBLOCK for 20% off all ticket prices!</div>
+
+  <main>
+    <section class="members">
+      <h2 class="section-title">The <span>Band</span></h2>
+      <div class="members-grid">
+
+        <article class="card">
+          <!-- FIX 3: explicit width + height prevent layout shift -->
+          <!-- FIX 4: loading="lazy" defers download until the image is near
+               the viewport, saving bandwidth on initial page load -->
+          <img src="https://picsum.photos/seed/alice/400/400"
+               alt="Alice the Bottleneck Smith"
+               width="400" height="400"
+               loading="lazy">
+          <div class="card-body">
+            <h3>Alice "The Bottleneck" Smith</h3>
+            <p class="role">Lead Vocals</p>
+            <p>Alice has been delivering render-blocking harmonies since dial-up was a thing.
+               Her voice can stall a browser mid-paint and still earn a standing ovation.</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <!-- FIX 3: explicit width + height prevent layout shift -->
+          <!-- FIX 4: loading="lazy" defers download until near viewport -->
+          <img src="https://picsum.photos/seed/bob/400/400"
+               alt="Bob Latency Jones"
+               width="400" height="400"
+               loading="lazy">
+          <div class="card-body">
+            <h3>Bob "Latency" Jones</h3>
+            <p class="role">Lead Guitar</p>
+            <p>Bob's riffs arrive exactly 300 ms after you expect them — and somehow that makes
+               them hit harder. He calls it "the art of deferred resolution".</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <!-- FIX 3: explicit width + height prevent layout shift -->
+          <!-- FIX 4: loading="lazy" defers download until near viewport -->
+          <img src="https://picsum.photos/seed/carol/400/400"
+               alt="Carol Blocking Chen"
+               width="400" height="400"
+               loading="lazy">
+          <div class="card-body">
+            <h3>Carol "Blocking" Chen</h3>
+            <p class="role">Drums &amp; Percussion</p>
+            <p>Carol's syncopated blocking patterns have crashed more than one browser tab.
+               She calls it "percussive garbage collection". The crowd calls it transcendent.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="tour">
+      <h2 class="section-title">Tour <span>Dates</span></h2>
+      <ul class="tour-list">
+        <li>
+          <span class="date">15 Jun 2026</span>
+          <span>Berlin, Germany</span>
+          <span class="venue">Huxleys Neue Welt</span>
+        </li>
+        <li>
+          <span class="date">03 Jul 2026</span>
+          <span>Amsterdam, NL</span>
+          <span class="venue">Paradiso</span>
+        </li>
+        <li>
+          <span class="date">22 Jul 2026</span>
+          <span>London, UK</span>
+          <span class="venue">O2 Forum Kentish Town</span>
+        </li>
+        <li>
+          <span class="date">10 Aug 2026</span>
+          <span>Paris, France</span>
+          <span class="venue">La Cigale</span>
+        </li>
+        <li>
+          <span class="date">05 Sep 2026</span>
+          <span>Barcelona, Spain</span>
+          <span class="venue">Razzmatazz</span>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; <span id="year"></span> The Render Blockers. All rights reserved.</p>
+    <!-- FIX 8: rel="noopener noreferrer" prevents the new tab from accessing window.opener
+         (reverse tabnapping) and avoids the Lighthouse Best Practices flag -->
+    <p><a href="https://example.com/tickets" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Buy Tickets</a></p>
+  </footer>
+
+  <!-- Hidden modal -->
+  <div class="modal-overlay" id="newsletter-modal" aria-hidden="true">
+    <div class="modal">
+      <h2>Join the Mailing List</h2>
+      <p>Get tour updates, exclusive content, and merch drops straight to your inbox.</p>
+      <button class="modal-close">No thanks</button>
+    </div>
+  </div>
+
+  <!-- Cookie banner -->
+  <div class="cookie-banner" id="cookie-banner" role="region" aria-label="Cookie notice">
+    <p>We use cookies to analyse site traffic and personalise content.</p>
+    <button>Accept all</button>
+  </div>
+
+  <!-- FIX 2: script moved to end of <body> and marked defer — it executes
+       after the document is parsed, never blocking rendering -->
+  <script src="main.js" defer></script>
+</body>
+</html>

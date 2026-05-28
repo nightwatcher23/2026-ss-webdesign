@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<!-- PROBLEM: missing lang attribute on <html> — screen readers cannot determine language -->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Render Blockers</title>
+
+  <!-- PROBLEM: no preconnect hints for fonts.googleapis.com or fonts.gstatic.com -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- PROBLEM: render-blocking script in <head>, no defer or async -->
+  <script src="main.js"></script>
+
+  <!-- PROBLEM: multiple large render-blocking external stylesheets in <head>
+       Bootstrap (~192 KB) + Animate.css (~78 KB) + Font Awesome (~73 KB)
+       all block rendering until fully downloaded and parsed -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- PROBLEM: large third-party JS libraries loaded synchronously in <head>, no defer
+       jQuery (~90 KB) + Moment.js (~290 KB) + Chart.js (~210 KB) + Lodash (~72 KB)
+       all block HTML parsing until every byte is downloaded and executed -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+
+  <!-- PROBLEM: additional large render-blocking stylesheets — Semantic UI (~620 KB) and
+       Bulma (~200 KB) must be fully downloaded before the browser can paint one pixel -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+
+  <!-- PROBLEM: document.write() pauses HTML parsing while the browser re-enters the parser -->
+  <script>document.write('<meta name="generator" content="render-blocker-v1">');</script>
+
+  <!-- PROBLEM: long synchronous task on the main thread — inflates Total Blocking Time (TBT) -->
+  <script>
+    var _d = 0;
+    for (var _i = 0; _i < 30000000; _i++) { _d += Math.sqrt(_i); }
+  </script>
+
+  <!-- PROBLEM: all CSS in one large block — critical above-the-fold styles mixed with
+       styles for a hidden modal and a cookie banner that are never visible on page load -->
+  <style>
+    /* PROBLEM: @import creates a chained CSS request — the browser must finish downloading
+       this stylesheet before it can even start fetching the imported one */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+
+    /* ── Critical (above the fold) ──────────────────────────── */
+    :root {
+      --bg:      #0d0d0d;
+      --surface: #1a1a1a;
+      --accent:  #e63946;
+      --text:    #f0f0f0;
+      --muted:   #888888;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+    }
+
+    .hero {
+      position: relative;
+      height: 500px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.4);
+    }
+
+    .hero-content { position: relative; z-index: 1; padding: 0 1rem; }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--muted);
+      margin-top: 1rem;
+    }
+
+    /* ── Below the fold ──────────────────────────────────────── */
+
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .section-title span { color: var(--accent); }
+
+    section {
+      padding: 4rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(230, 57, 70, .25);
+    }
+
+    /* PROBLEM: no aspect-ratio — browser reserves zero height before images load;
+       when each 4000×4000 image finally arrives the cards snap from ~80 px to full height,
+       violently shifting every element below them (massive CLS) */
+    .card img { width: 100%; display: block; min-height: 80px; background: #1a1a1a; }
+    .card-body { padding: 1.5rem; }
+    .card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: .25rem; }
+
+    .card .role {
+      color: var(--accent);
+      font-size: .8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-bottom: .75rem;
+    }
+
+    .card p { color: var(--muted); font-size: .9rem; }
+
+    .tour-list {
+      list-style: none;
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .tour-list li {
+      display: grid;
+      grid-template-columns: 130px 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: var(--surface);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .tour-list .date { font-weight: 700; color: var(--accent); font-size: .95rem; }
+    .tour-list .venue { color: var(--muted); font-size: .875rem; text-align: right; }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: .875rem;
+      border-top: 1px solid #222;
+      margin-top: 2rem;
+    }
+
+    /* ── Hidden modal — never shown on page load ─────────────── */
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .8);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 420px;
+      width: 90%;
+    }
+
+    .modal h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .modal p  { color: var(--muted); margin-bottom: 1.5rem; }
+
+    .modal-close {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: .6rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* ── Cookie banner — never shown on page load ────────────── */
+
+    .cookie-banner {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #1e1e1e;
+      padding: 1rem 2rem;
+      border-top: 2px solid var(--accent);
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .cookie-banner p { color: var(--muted); font-size: .875rem; }
+
+    .cookie-banner button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: .5rem 1.25rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* PROBLEM: large block of unused CSS — none of these selectors match any element on the
+       page but the browser still must download, parse, and build CSSOM for all of them */
+    .sidebar { width: 250px; background: #222; padding: 1rem; }
+    .sidebar-item { padding: .5rem 1rem; color: #ccc; cursor: pointer; }
+    .sidebar-item:hover { background: rgba(255,255,255,.05); }
+    .breadcrumb { display: flex; gap: .5rem; list-style: none; padding: .5rem 0; }
+    .breadcrumb li::after { content: '/'; margin-left: .5rem; color: var(--muted); }
+    .badge { display: inline-block; padding: .25em .5em; font-size: .75rem; border-radius: 4px; }
+    .badge-primary { background: var(--accent); color: #fff; }
+    .badge-secondary { background: #555; color: #fff; }
+    .alert { padding: 1rem 1.5rem; border-radius: 6px; margin-bottom: 1rem; }
+    .alert-info { background: #1a3a5c; border-left: 4px solid #4a9eda; color: #cce; }
+    .alert-warning { background: #3a2a00; border-left: 4px solid #f0a500; color: #fe8; }
+    .pagination { display: flex; gap: .25rem; list-style: none; }
+    .pagination li a { display: block; padding: .4rem .75rem; background: #222; border-radius: 4px; color: #ccc; text-decoration: none; }
+    .pagination li.active a { background: var(--accent); color: #fff; }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-menu { position: absolute; top: 100%; left: 0; background: #222; border-radius: 6px; min-width: 160px; display: none; z-index: 50; }
+    .dropdown-menu a { display: block; padding: .5rem 1rem; color: #ccc; text-decoration: none; }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .progress-bar-outer { background: #333; border-radius: 100px; height: 8px; overflow: hidden; }
+    .progress-bar-inner { background: var(--accent); height: 100%; transition: width .3s; }
+    .skeleton-loader { background: linear-gradient(90deg, #222 25%, #333 50%, #222 75%); background-size: 200% 100%; animation: skeleton-shimmer 1.5s infinite; border-radius: 4px; }
+    @keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .tag-list { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .tag { padding: .25rem .75rem; background: #222; border-radius: 100px; font-size: .8rem; color: #ccc; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .avatar-lg { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
+    .divider { border: none; border-top: 1px solid #222; margin: 2rem 0; }
+    .mt-1 { margin-top: .25rem; } .mt-2 { margin-top: .5rem; } .mt-3 { margin-top: 1rem; } .mt-4 { margin-top: 2rem; }
+    .mb-1 { margin-bottom: .25rem; } .mb-2 { margin-bottom: .5rem; } .mb-3 { margin-bottom: 1rem; } .mb-4 { margin-bottom: 2rem; }
+    .p-1 { padding: .25rem; } .p-2 { padding: .5rem; } .p-3 { padding: 1rem; } .p-4 { padding: 2rem; }
+    .rounded { border-radius: 6px; } .rounded-full { border-radius: 100px; }
+    .shadow-sm { box-shadow: 0 1px 3px rgba(0,0,0,.3); } .shadow-md { box-shadow: 0 4px 12px rgba(0,0,0,.4); } .shadow-lg { box-shadow: 0 8px 32px rgba(0,0,0,.5); }
+    .table { width: 100%; border-collapse: collapse; }
+    .table th, .table td { padding: .75rem 1rem; border-bottom: 1px solid #333; text-align: left; }
+    .table th { background: #1e1e1e; font-weight: 600; }
+    .form-input { width: 100%; padding: .6rem 1rem; background: #222; border: 1px solid #444; border-radius: 6px; color: var(--text); font-size: 1rem; }
+    .form-input:focus { outline: none; border-color: var(--accent); }
+    .form-label { display: block; margin-bottom: .4rem; font-size: .875rem; color: var(--muted); }
+    .btn-custom { display: inline-flex; align-items: center; gap: .5rem; padding: .6rem 1.5rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
+    .btn-primary-custom { background: var(--accent); color: #fff; }
+    .btn-ghost-custom { background: transparent; border: 1px solid #555; color: var(--text); }
+    .nav-custom { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-custom a { color: #ccc; text-decoration: none; font-size: .95rem; transition: color .2s; }
+    .header-bar { background: #111; padding: 1rem 2rem; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #222; }
+    .hero-badge { display: inline-block; background: var(--accent); color: #fff; padding: .3rem .8rem; border-radius: 100px; font-size: .8rem; font-weight: 700; text-transform: uppercase; }
+    .rating-stars { color: #f59e0b; font-size: 1.2rem; }
+    .ticker-tape { background: var(--accent); color: #fff; padding: .4rem 0; overflow: hidden; white-space: nowrap; }
+    .ticker-tape span { display: inline-block; padding-right: 4rem; }
+    .social-links { display: flex; gap: 1rem; }
+    .social-link { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #222; border-radius: 50%; color: #ccc; text-decoration: none; }
+    .social-link:hover { background: var(--accent); color: #fff; }
+    .merch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+    .merch-card { background: var(--surface); border-radius: 8px; overflow: hidden; }
+    .merch-card .price { font-size: 1.25rem; font-weight: 700; color: var(--accent); }
+    .merch-card .old-price { text-decoration: line-through; color: var(--muted); font-size: .875rem; }
+    .video-embed { aspect-ratio: 16/9; width: 100%; background: #000; border-radius: 8px; overflow: hidden; }
+    .video-embed iframe { width: 100%; height: 100%; border: none; }
+    .lyrics-block { font-family: 'Courier New', monospace; background: #111; padding: 2rem; border-radius: 8px; white-space: pre-wrap; line-height: 2; color: #ccc; }
+    .setlist { list-style: decimal; padding-left: 2rem; }
+    .setlist li { padding: .4rem 0; border-bottom: 1px solid #222; color: var(--muted); }
+    .venue-map iframe { width: 100%; height: 300px; border: none; }
+    .countdown-timer { display: flex; gap: 1.5rem; justify-content: center; }
+    .countdown-unit .value { font-size: 3rem; font-weight: 800; color: var(--accent); line-height: 1; }
+    .countdown-unit .label { font-size: .75rem; text-transform: uppercase; color: var(--muted); letter-spacing: .1em; }
+    .gig-poster { background: #111; border-radius: 12px; padding: 3rem 2rem; text-align: center; border: 2px solid var(--accent); }
+    .gig-poster h2 { font-size: 3rem; font-weight: 900; text-transform: uppercase; letter-spacing: -.02em; }
+    .setlist-tracker .track { display: flex; align-items: center; gap: 1rem; padding: .5rem 0; border-bottom: 1px solid #222; }
+    .setlist-tracker .track-number { font-size: 1.5rem; font-weight: 800; color: var(--accent); min-width: 2rem; }
+    .setlist-tracker .track-name { flex: 1; font-weight: 600; }
+    .setlist-tracker .track-duration { color: var(--muted); font-size: .875rem; }
+    .notification-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: var(--accent); border-radius: 50%; font-size: .65rem; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; }
+    .glassmorphism { background: rgba(255,255,255,.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; }
+    .neon-glow { text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 40px var(--accent); }
+    .vinyl-spin { animation: vinyl-rotate 4s linear infinite; }
+    @keyframes vinyl-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .waveform-bar { display: inline-block; width: 3px; background: var(--accent); animation: waveform-bounce 1s ease-in-out infinite alternate; }
+    @keyframes waveform-bounce { from { height: 8px; } to { height: 32px; } }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <!-- PROBLEM: massively oversized hero image (~5000×4000 px, several MB) -->
+    <!-- PROBLEM: no width or height attributes — browser cannot reserve space, causes layout shift -->
+    <!-- PROBLEM: no loading attribute and no fetchpriority hint on LCP image -->
+    <img src="https://picsum.photos/5000/4000" alt="The Render Blockers live on stage">
+    <div class="hero-content">
+      <h1>The <span>Render</span> Blockers</h1>
+      <p>We drop frames and break hearts since 1999.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="members">
+      <h2 class="section-title">The <span>Band</span></h2>
+      <div class="members-grid">
+
+        <article class="card">
+          <!-- PROBLEM: no width or height attributes -->
+          <!-- PROBLEM: no loading="lazy" -->
+          <!-- PROBLEM: missing alt attribute -->
+          <!-- PROBLEM: massively oversized card image (4000×4000 px, several MB) -->
+          <img src="https://picsum.photos/seed/alice/4000/4000">
+          <div class="card-body">
+            <h3>Alice "The Bottleneck" Smith</h3>
+            <p class="role">Lead Vocals</p>
+            <p>Alice has been delivering render-blocking harmonies since dial-up was a thing.
+               Her voice can stall a browser mid-paint and still earn a standing ovation.</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <!-- PROBLEM: no width or height attributes -->
+          <!-- PROBLEM: no loading="lazy" -->
+          <!-- PROBLEM: missing alt attribute -->
+          <!-- PROBLEM: massively oversized card image (4000×4000 px, several MB) -->
+          <img src="https://picsum.photos/seed/bob/4000/4000">
+          <div class="card-body">
+            <h3>Bob "Latency" Jones</h3>
+            <p class="role">Lead Guitar</p>
+            <p>Bob's riffs arrive exactly 300 ms after you expect them — and somehow that makes
+               them hit harder. He calls it "the art of deferred resolution".</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <!-- PROBLEM: no width or height attributes -->
+          <!-- PROBLEM: no loading="lazy" -->
+          <!-- PROBLEM: missing alt attribute -->
+          <!-- PROBLEM: massively oversized card image (4000×4000 px, several MB) -->
+          <img src="https://picsum.photos/seed/carol/4000/4000">
+          <div class="card-body">
+            <h3>Carol "Blocking" Chen</h3>
+            <p class="role">Drums &amp; Percussion</p>
+            <p>Carol's syncopated blocking patterns have crashed more than one browser tab.
+               She calls it "percussive garbage collection". The crowd calls it transcendent.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="tour">
+      <h2 class="section-title">Tour <span>Dates</span></h2>
+      <ul class="tour-list">
+        <li>
+          <span class="date">15 Jun 2026</span>
+          <span>Berlin, Germany</span>
+          <span class="venue">Huxleys Neue Welt</span>
+        </li>
+        <li>
+          <span class="date">03 Jul 2026</span>
+          <span>Amsterdam, NL</span>
+          <span class="venue">Paradiso</span>
+        </li>
+        <li>
+          <span class="date">22 Jul 2026</span>
+          <span>London, UK</span>
+          <span class="venue">O2 Forum Kentish Town</span>
+        </li>
+        <li>
+          <span class="date">10 Aug 2026</span>
+          <span>Paris, France</span>
+          <span class="venue">La Cigale</span>
+        </li>
+        <li>
+          <span class="date">05 Sep 2026</span>
+          <span>Barcelona, Spain</span>
+          <span class="venue">Razzmatazz</span>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; <span id="year"></span> The Render Blockers. All rights reserved.</p>
+    <!-- PROBLEM: target="_blank" without rel="noopener noreferrer" — security risk + Best Practices flag -->
+    <p><a href="https://example.com/tickets" target="_blank" style="color:var(--accent)">Buy Tickets</a></p>
+  </footer>
+
+  <!-- Hidden modal (styles loaded above but element never shown) -->
+  <div class="modal-overlay" id="newsletter-modal" aria-hidden="true">
+    <div class="modal">
+      <h2>Join the Mailing List</h2>
+      <p>Get tour updates, exclusive content, and merch drops straight to your inbox.</p>
+      <button class="modal-close">No thanks</button>
+    </div>
+  </div>
+
+  <!-- Cookie banner (styles loaded above but element never shown) -->
+  <div class="cookie-banner" id="cookie-banner" role="region" aria-label="Cookie notice">
+    <p>We use cookies to analyse site traffic and personalise content.</p>
+    <button>Accept all</button>
+  </div>
+
+  <!-- PROBLEM: heavy synchronous script runs AFTER FCP — every millisecond here counts
+       directly toward Total Blocking Time because the main thread is occupied and
+       the page cannot respond to user input. -->
+  <script>
+    var _tbt1 = 0;
+    for (var _ti1 = 0; _ti1 < 50000000; _ti1++) { _tbt1 += Math.sqrt(_ti1); }
+  </script>
+
+  <!-- PROBLEM: second independent long task (separate <script> block = separate parser task)
+       adds another blocking period on top of the first one. -->
+  <script>
+    var _tbt2 = 0;
+    for (var _ti2 = 0; _ti2 < 50000000; _ti2++) { _tbt2 += Math.sqrt(_ti2); }
+  </script>
+
+  <!-- PROBLEM: chained setTimeout tasks keep the main thread busy well into the
+       interactive phase — Lighthouse captures all of them in its TBT window. -->
+  <script>
+    (function () {
+      function grind() {
+        var d = 0;
+        for (var i = 0; i < 50000000; i++) { d += Math.sqrt(i); }
+        return d;
+      }
+      setTimeout(grind, 0);
+      setTimeout(grind, 50);
+    }());
+  </script>
+
+  <!-- PROBLEM: content dynamically injected after page load causes Cumulative Layout Shift (CLS).
+       The promo bar is inserted between the hero and main content ~900 ms after load,
+       shoving the entire page body downward mid-scroll. -->
+  <script>
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        var promo = document.createElement('div');
+        promo.style.cssText = [
+          'background:#e63946',
+          'color:#fff',
+          'padding:1.5rem 2rem',
+          'font-size:1.05rem',
+          'font-weight:700',
+          'text-align:center',
+          'letter-spacing:.02em'
+        ].join(';');
+        promo.textContent =
+          'PRE-SALE ENDS TONIGHT — Use code RENDERBLOCK for 20\u0025 off all ticket prices!';
+        var main = document.querySelector('main');
+        main.parentNode.insertBefore(promo, main);
+      }, 900);
+    });
+  </script>
+
+</body>
+</html>
