@@ -20,9 +20,10 @@ h1{
 h3{
     font-size: 18px;
     font-weight: 400px;
+    text-align: center;
 }
 
-.button{
+.container{
     max-width: 800px;
     max-height: 200px;
     width: 100%;
