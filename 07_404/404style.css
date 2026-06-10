@@ -1,0 +1,49 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: system-ui, -apple-system, sans-serif, Lexend Mega;
+    background: #f9f5f2;
+    color: #000000;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 4rem 2rem;
+}
+
+h1{
+    font-size: 125px;
+    font-weight: 400px;
+    text-align: center;
+    /*text-shadow: 4px 0px 0px rgba(0, 0, 0, 1);*/
+}
+
+h3{
+    font-size: 18px;
+    font-weight: 400px;
+}
+
+.button{
+    max-width: 800px;
+    max-height: 200px;
+    width: 100%;
+    border-radius: 5%/20%;
+    outline: 5px solid;
+    outline-color: black;
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 1);
+}
+
+.yellow{
+    background-color: #f8cb46;
+}
+
+.green{
+    background-color: #a0ff92;
+}
+
+.pink{
+    background-color: #fd91e8;
+}
+
+.purple{
+    background-color: #c6a3ff;
+}
