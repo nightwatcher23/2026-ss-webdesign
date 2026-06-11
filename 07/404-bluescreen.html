@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+
+    <title>404 — Seite nicht gefunden</title>
+    <style>
+        body {
+            background: #0000ff;
+            color: #fff;
+            font-family: "Source Code Pro", monospace;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        main {
+            max-width: 600px;
+        }
+
+        a {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>404 — Seite nicht gefunden</h1>
+    </header>
+    <main>
+        <p>Die angeforderte Seite konnte nicht gefunden werden.</p>
+        <p><a href="/">Zur Startseite</a></p>
+
+        <div class="typing"></div>
+    </main>
+
+    <script> 
+
+        const typingElement = document.querySelector('.typing');
+        const message = 'A problem has been detected and Windows has been shut down to prevent damage to your computer.';
+
+        let index = 0;
+
+        function type() {
+            if (index < message.length) {
+                typingElement.textContent += message.charAt(index);
+                index++;
+                setTimeout(type, 100); // Geschwindigkeit der Tipp-Animation
+            }
+        }
+
+        type();
+    </script>
+</body>
+
+</html>
