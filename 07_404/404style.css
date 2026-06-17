@@ -2,8 +2,8 @@
 
 body {
     font-family: system-ui, -apple-system, sans-serif, Lexend Mega;
-    background: #f9f5f2;
-    color: #000000;
+    background: black;
+    color: white;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -23,28 +23,41 @@ h3{
     text-align: center;
 }
 
-.container{
-    max-width: 800px;
-    max-height: 200px;
-    width: 100%;
-    border-radius: 5%/20%;
-    outline: 5px solid;
-    outline-color: black;
-    box-shadow: 6px 6px 0px rgba(0, 0, 0, 1);
+.container_eye{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+    padding: 10px;
+    gap: 300px;
 }
 
-.yellow{
-    background-color: #f8cb46;
+.left-eye{
+    grid-column: 2;
+    grid-row: 1;
 }
 
-.green{
-    background-color: #a0ff92;
+.right-eye{
+    grid-column: 3;
+    grid-row: 1;
 }
 
-.pink{
-    background-color: #fd91e8;
+.eye-ball{
+    margin: 0 auto; /*element will sit centrally wihtin parent container*/
+    width: 300px;
+    height: 300px;
+    background-color: white;
+    border-radius: 100% 0px; /*top-right and bottom-left corners of square rounded, other two aren't*/
+    transform: rotate(45deg); /*square rotated by 45 degrees*/
+    z-index: 1;
+    position: relative;
+    bottom: 75px;
 }
 
-.purple{
-    background-color: #c6a3ff;
+.pupil{
+    margin: 0 auto;
+    width: 150px;
+    height: 150px;
+    background-color: red;
+    border-radius: 100%;
+    z-index: 2;
 }
