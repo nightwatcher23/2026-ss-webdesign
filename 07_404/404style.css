@@ -27,7 +27,7 @@ h3{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(1, 1fr);
-    padding: 10px;
+    padding: 100px;
     gap: 300px;
 }
 
@@ -60,4 +60,32 @@ h3{
     background-color: red;
     border-radius: 100%;
     z-index: 2;
+}
+
+.mouth{
+    position: relative;
+    width: calc(var(--radius) * 2);
+    height: calc(var(--radius) * 2);
+    margin: 100px auto;
+}
+
+.tooth{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    margin: -30px;
+  
+    background: white;
+  
+    display: grid;
+    place-items: center;
+
+    --angle: calc(360deg / var(--total) * var(--i));
+  
+    transform: 
+        rotate(var(--angle))           /* Rotate to position */
+        translateX(var(--radius))      /* Move away from center */
+        /*rotate(calc(-1 * var(--angle))); /* Rotate back */
 }
