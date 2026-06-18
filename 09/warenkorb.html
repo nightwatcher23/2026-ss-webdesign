@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<!-- VORBILD-SEITE: So sieht der Shop-Ausschnitt aus, wenn alles barrierefrei umgesetzt ist.
+     Nutzt diese Seite als Orientierung für die Reparatur von 02-a11y-fix.html. -->
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warenkorb – Pflanzenglück</title>
+
+  <style>
+    :root {
+      --bg:       #ffffff;
+      --surface:  #f6f6f4;
+      --text:     #2b2b2b;
+      --accent:   #2f6b39;   /* dunkles Grün – Kontrast zu Weiß > 4,5:1 */
+      --muted:    #5c5c5c;   /* dunkelgrau – als Fließtext kontraststark genug */
+      --link:     #1d5f9c;   /* kräftiges Blau – Kontrast > 4,5:1 */
+      --danger:   #b3261e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    /* Deutlich sichtbarer Fokus-Indikator für ALLE fokussierbaren Elemente. */
+    :focus-visible {
+      outline: 3px solid #0e5620;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    /* „Skip link" – springt per Tab direkt zum Hauptinhalt. */
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: 0;
+      background: var(--accent);
+      color: #fff;
+      padding: .6rem 1rem;
+      z-index: 10;
+    }
+    .skip-link:focus { left: .5rem; top: .5rem; }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .menu {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .menu a {
+      color: var(--link);
+      text-decoration: none;
+      font-size: .95rem;
+    }
+    .menu a:hover { text-decoration: underline; }
+    .menu a[aria-current="page"] { font-weight: 700; text-decoration: underline; }
+
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+    }
+
+    h1 { font-size: 2rem; margin-bottom: 1.5rem; }
+    h2 { font-size: 1.3rem; margin: 2.5rem 0 1rem; }
+
+    .cart-item {
+      display: grid;
+      grid-template-columns: 90px 1fr auto;
+      gap: 1.25rem;
+      align-items: center;
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .cart-item img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .cart-item h3 { font-size: 1.05rem; }
+    .cart-item .unit-price { color: var(--muted); font-size: .9rem; }
+
+    .qty {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-top: .4rem;
+    }
+    .qty label { font-size: .85rem; color: var(--muted); }
+    .qty input {
+      width: 3.5rem;
+      padding: .3rem .4rem;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .line-end { text-align: right; }
+    .line-total { font-weight: 700; font-size: 1.1rem; }
+
+    .remove {
+      margin-top: .4rem;
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: .85rem;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: .2rem;
+    }
+
+    .summary {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 1.5rem;
+      max-width: 360px;
+      margin-left: auto;
+    }
+    .summary .row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: .6rem;
+    }
+    .summary .grand {
+      border-top: 1px solid #ddd;
+      padding-top: .8rem;
+      margin-top: .8rem;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 1rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: .75rem 1.6rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .btn:hover { background: #25522d; }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 1.5rem;
+      color: var(--link);
+    }
+
+    footer {
+      border-top: 1px solid #eee;
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Zum Hauptinhalt springen</a>
+
+  <header>
+    <div class="top-bar">
+      <a class="logo" href="02-a11y-fix.html">Pflanzenglück</a>
+      <nav aria-label="Hauptnavigation">
+        <ul class="menu">
+          <li><a href="02-a11y-fix.html">Start</a></li>
+          <li><a href="02-a11y-fix.html">Pflanzen</a></li>
+          <li><a href="warenkorb.html" aria-current="page">Warenkorb</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <h1>Dein Warenkorb</h1>
+
+    <h2>Artikel</h2>
+
+    <!-- Jeder Artikel ist ein eigenständiges <article>. Mengen-Felder haben ein
+         echtes, verknüpftes <label>. Das „Entfernen" ist ein echter <button>. -->
+    <article class="cart-item" data-price="29.90">
+      <img src="https://picsum.photos/seed/monstera/180/180"
+           alt="Monstera Deliciosa in grauem Tontopf">
+      <div>
+        <h3>Monstera Deliciosa</h3>
+        <p class="unit-price">29,90 € / Stück</p>
+        <div class="qty">
+          <label for="qty-monstera">Menge</label>
+          <input type="number" id="qty-monstera" name="qty-monstera"
+                 min="1" max="99" value="1" inputmode="numeric">
+        </div>
+      </div>
+      <div class="line-end">
+        <p class="line-total"><span class="line-amount">29,90</span> €</p>
+        <button type="button" class="remove">
+          Monstera entfernen
+        </button>
+      </div>
+    </article>
+
+    <article class="cart-item" data-price="14.50">
+      <img src="https://picsum.photos/seed/sukkulente/180/180"
+           alt="Kleine Sukkulente im weißen Keramiktopf">
+      <div>
+        <h3>Sukkulenten-Set (3 Stück)</h3>
+        <p class="unit-price">14,50 € / Stück</p>
+        <div class="qty">
+          <label for="qty-sukkulente">Menge</label>
+          <input type="number" id="qty-sukkulente" name="qty-sukkulente"
+                 min="1" max="99" value="2" inputmode="numeric">
+        </div>
+      </div>
+      <div class="line-end">
+        <p class="line-total"><span class="line-amount">29,00</span> €</p>
+        <button type="button" class="remove">
+          Sukkulenten-Set entfernen
+        </button>
+      </div>
+    </article>
+
+    <h2>Gutscheincode</h2>
+    <form class="qty" style="gap:.75rem" aria-label="Gutschein einlösen">
+      <label for="voucher">Gutscheincode</label>
+      <input type="text" id="voucher" name="voucher" autocomplete="off"
+             style="width:12rem;padding:.5rem .7rem;border:1px solid #aaa;border-radius:6px;font-size:1rem">
+      <button type="submit" class="btn" style="margin-top:0">Einlösen</button>
+    </form>
+
+    <h2>Zusammenfassung</h2>
+    <div class="summary" aria-live="polite">
+      <div class="row">
+        <span>Zwischensumme</span>
+        <span><span id="subtotal">58,90</span> €</span>
+      </div>
+      <div class="row">
+        <span>Versand</span>
+        <span>4,90 €</span>
+      </div>
+      <div class="row grand">
+        <span>Gesamt</span>
+        <span><span id="grandtotal">63,80</span> €</span>
+      </div>
+      <button type="button" class="btn" style="width:100%">Zur Kasse</button>
+    </div>
+
+    <!-- Verständlicher Linktext statt „Hier klicken". -->
+    <a class="back-link" href="02-a11y-fix.html">Weiter einkaufen im Shop</a>
+  </main>
+
+  <footer>
+    <!-- Rein dekoratives Bild: leeres alt, damit Screenreader es überspringen. -->
+    <img src="https://picsum.photos/seed/leaf/40/40" width="20" height="20" alt="">
+    © 2026 Pflanzenglück
+  </footer>
+
+  <!-- Macht die Vorlage „lebendig": Mengen ändern und Artikel entfernen
+       aktualisieren die Summen. Rein zur Veranschaulichung. -->
+  <script>
+    const VERSAND = 4.90;
+    const euro = n => n.toFixed(2).replace('.', ',');
+
+    function recalc() {
+      let subtotal = 0;
+      document.querySelectorAll('.cart-item').forEach(item => {
+        const price = parseFloat(item.dataset.price);
+        const qty = parseInt(item.querySelector('input[type=number]').value, 10) || 0;
+        const line = price * qty;
+        subtotal += line;
+        item.querySelector('.line-amount').textContent = euro(line);
+      });
+      document.getElementById('subtotal').textContent = euro(subtotal);
+      document.getElementById('grandtotal').textContent =
+        euro(subtotal + (subtotal > 0 ? VERSAND : 0));
+    }
+
+    document.querySelectorAll('.cart-item input[type=number]')
+      .forEach(input => input.addEventListener('input', recalc));
+
+    document.querySelectorAll('.remove').forEach(btn =>
+      btn.addEventListener('click', () => {
+        btn.closest('.cart-item').remove();
+        recalc();
+      })
+    );
+
+    document.querySelector('form[aria-label="Gutschein einlösen"]')
+      .addEventListener('submit', e => {
+        e.preventDefault();
+        alert('Gutscheincode geprüft.');
+      });
+
+    document.querySelectorAll('.btn').forEach(b => {
+      if (b.textContent.trim() === 'Zur Kasse') {
+        b.addEventListener('click', () => alert('Weiter zur Kasse …'));
+      }
+    });
+
+    recalc();
+  </script>
+
+</body>
+</html>
