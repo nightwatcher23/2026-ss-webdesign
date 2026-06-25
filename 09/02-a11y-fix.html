@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- (?) Fehlt hier etwas am <html>-Tag, das Screenreadern die Sprache verrät? -->
-<html>
+<!-- html-Tag lang sagt Screenreader, welche Sprache angezeigt wird -->
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +12,10 @@
       --surface:   #f6f6f4;
       --text:      #2b2b2b;
       --accent:    #3a7d44;   /* sattes Grün */
-      /* (?) Diese drei Farben sind für Text/Links/Button viel zu blass.
-             Kontrast zum weißen Hintergrund liegt deutlich unter 4,5:1. */
-      --muted:     #b3b3b3;   /* (?) zu blass für Fließtext */
-      --link:      #9ad0a3;   /* (?) zu blass für Links */
-      --btn-faint: #a8d3ae;   /* (?) zu blass für den Button */
+      /* Kontrastreiche Farben: 4,5:1. */
+      --muted:     #444;
+      --link:      #094611;
+      --btn-faint: #094611;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,7 +23,9 @@
     /* (?) Der sichtbare Fokus-Rahmen wird hier für ALLE Elemente entfernt.
            Tastatur-Nutzer sehen dann nicht mehr, wo sie gerade sind.
            Diese Regel muss weg – stattdessen ein klar sichtbarer Fokus. */
-    *:focus { outline: none; }
+    /*:focus { outline: none; }*/
+
+    *:focus { outline: 2px solid red; outline-offset: 4px;}
 
     body {
       font-family: system-ui, sans-serif;
@@ -170,9 +171,15 @@
                Per Maus funktioniert das hier zwar (onclick), aber per Tab ist nichts
                erreichbar – genau das ist die Barriere. -->
       <ul class="menu">
-        <span class="fake-link" onclick="location.href='02-a11y-fix.html'">Start</span>
-        <span class="fake-link" onclick="location.href='02-a11y-fix.html'">Pflanzen</span>
-        <span class="fake-link" onclick="location.href='warenkorb.html'">Warenkorb</span>
+        <li>
+          <a class="fake-link" href="location.href='02-a11y-fix.html'">Start</a>
+        </li>
+        <li>
+          <a class="fake-link" href="location.href='02-a11y-fix.html'">Pflanzen</a>
+        </li>
+        <li>
+          <a class="fake-link" href="location.href='warenkorb.html'">Warenkorb</a>
+        </li>
       </ul>
     </div>
   </div>
@@ -212,10 +219,10 @@
       <!-- (?) Jedes Eingabefeld braucht ein technisch verknüpftes <label>
                (for / id) – ein placeholder allein reicht nicht. -->
       <div class="field required">
-        <input type="text" placeholder="Vorname">
+        <input type="text" required placeholder="Vorname">
       </div>
       <div class="field required">
-        <input type="email" placeholder="E-Mail-Adresse">
+        <input type="email" required placeholder="E-Mail-Adresse">
       </div>
 
       <!-- (?) Das ist ein klickbares span statt eines echten Buttons. -->
