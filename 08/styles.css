@@ -1,0 +1,178 @@
+/*
+ * styles.css — non-critical styles
+ * Loaded asynchronously in fast.html and todo.html via:
+ *   <link rel="preload" as="style" href="styles.css" onload="this.rel='stylesheet'">
+ */
+
+/* ── Sections & layout ──────────────────────────────────────── */
+
+.section-title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.section-title span { color: var(--accent); }
+
+section {
+  padding: 4rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── Band member cards ───────────────────────────────────────── */
+
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.card {
+  background: var(--surface);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(230, 57, 70, .25);
+}
+
+.card img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.card-body { padding: 1.5rem; }
+
+.card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: .25rem;
+}
+
+.card .role {
+  color: var(--accent);
+  font-size: .8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-bottom: .75rem;
+}
+
+.card p { color: var(--muted); font-size: .9rem; }
+
+/* ── Tour dates ──────────────────────────────────────────────── */
+
+.tour-list {
+  list-style: none;
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.tour-list li {
+  display: grid;
+  grid-template-columns: 130px 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--surface);
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+}
+
+.tour-list .date {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: .95rem;
+}
+
+.tour-list .venue {
+  color: var(--muted);
+  font-size: .875rem;
+  text-align: right;
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  color: var(--muted);
+  font-size: .875rem;
+  border-top: 1px solid #222;
+  margin-top: 2rem;
+}
+
+/* ── Hidden modal — never shown on page load ─────────────────── */
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .8);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+}
+
+.modal h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+.modal p  { color: var(--muted); margin-bottom: 1.5rem; }
+
+.modal-close {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: .6rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* ── Cookie banner — never shown on page load ────────────────── */
+
+.cookie-banner {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1e1e1e;
+  padding: 1rem 2rem;
+  border-top: 2px solid var(--accent);
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.cookie-banner p { color: var(--muted); font-size: .875rem; }
+
+.cookie-banner button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: .5rem 1.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+}

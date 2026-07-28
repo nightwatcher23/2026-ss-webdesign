@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<!-- (?) Fehlt hier etwas am <html>-Tag, das Screenreadern die Sprache verrät? -->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pflanzenglück – Shop</title>
+
+  <style>
+    :root {
+      --bg:        #ffffff;
+      --surface:   #f6f6f4;
+      --text:      #2b2b2b;
+      --accent:    #3a7d44;   /* sattes Grün */
+      /* (?) Diese drei Farben sind für Text/Links/Button viel zu blass.
+             Kontrast zum weißen Hintergrund liegt deutlich unter 4,5:1. */
+      --muted:     #b3b3b3;   /* (?) zu blass für Fließtext */
+      --link:      #9ad0a3;   /* (?) zu blass für Links */
+      --btn-faint: #a8d3ae;   /* (?) zu blass für den Button */
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* (?) Der sichtbare Fokus-Rahmen wird hier für ALLE Elemente entfernt.
+           Tastatur-Nutzer sehen dann nicht mehr, wo sie gerade sind.
+           Diese Regel muss weg – stattdessen ein klar sichtbarer Fokus. */
+    *:focus { outline: none; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .menu {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .menu a {
+      color: var(--link);          /* (?) zu blasser Link */
+      text-decoration: none;
+      font-size: .95rem;
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+    }
+
+    /* Optische „Überschriften" – nur fett & groß, ohne echte Hierarchie */
+    .big-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: .5rem;
+    }
+
+    .sub-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1rem;
+    }
+
+    .product {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
+      align-items: center;
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .product img {
+      width: 100%;
+      border-radius: 8px;
+      display: block;
+    }
+
+    .price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: .5rem 0 1rem;
+    }
+
+    .desc { color: var(--muted); }   /* (?) zu blasser Fließtext */
+
+    /* „Button" ist in Wahrheit nur ein gestyltes div */
+    .fake-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      background: var(--btn-faint);  /* (?) zu blasser Button */
+      color: #fff;
+      padding: .7rem 1.6rem;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* „Link" ist in Wahrheit nur ein gestyltes span */
+    .fake-link {
+      color: var(--link);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .form-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 1.5rem;
+      max-width: 420px;
+    }
+
+    .field { margin-bottom: 1rem; }
+
+    .field input {
+      width: 100%;
+      padding: .6rem .8rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    /* (?) Pflichtfelder werden NUR über die rote Rahmenfarbe markiert –
+           wer keine Farben unterscheiden kann, erkennt das nicht. */
+    .required input { border-color: #d23; }
+
+    .hint {
+      margin-top: 1rem;
+      font-size: .85rem;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid #eee;
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);     /* (?) zu blasser Text */
+      font-size: .85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- (?) Das hier ist die Kopfzeile mit Navigation.
+           Welche echten Landmarks (header, nav) gehören hier statt der divs? -->
+  <div class="top-bar">
+    <div class="logo">Pflanzenglück</div>
+    <div>
+      <!-- (?) Navigation als Liste von echten Links (<a href>) statt klickbarer span/div.
+               Per Maus funktioniert das hier zwar (onclick), aber per Tab ist nichts
+               erreichbar – genau das ist die Barriere. -->
+      <ul class="menu">
+        <span class="fake-link" onclick="location.href='02-a11y-fix.html'">Start</span>
+        <span class="fake-link" onclick="location.href='02-a11y-fix.html'">Pflanzen</span>
+        <span class="fake-link" onclick="location.href='warenkorb.html'">Warenkorb</span>
+      </ul>
+    </div>
+  </div>
+
+  <!-- (?) Das ist der Hauptinhalt der Seite. Welche Landmark fehlt? -->
+  <div class="wrap">
+
+    <!-- (?) Das ist die wichtigste Überschrift der Seite.
+             Welche Ebene der Überschriften-Hierarchie gehört hierher? -->
+    <div class="big-title">Monstera Deliciosa</div>
+
+    <div class="product">
+      <div>
+        <!-- (?) Das Produktbild trägt Information.
+                 Es braucht einen aussagekräftigen alt-Text. -->
+        <img src="https://picsum.photos/seed/monstera/560/560">
+      </div>
+      <div>
+        <div class="price">29,90 €</div>
+        <p class="desc">
+          Die pflegeleichte Zimmerpflanze mit den charakteristischen
+          Fensterblättern. Wächst schnell und verzeiht auch mal vergessenes Gießen.
+        </p>
+
+        <!-- (?) Das soll ein echter Button sein, der per Tab erreichbar
+                 und mit Enter/Leertaste auslösbar ist – kein div. -->
+        <div class="fake-btn" onclick="alert('In den Warenkorb gelegt!')">
+          In den Warenkorb
+        </div>
+      </div>
+    </div>
+
+    <!-- (?) Zweitwichtigste Überschrift – passende Ebene wählen. -->
+    <div class="sub-title">Newsletter abonnieren</div>
+
+    <div class="form-card">
+      <!-- (?) Jedes Eingabefeld braucht ein technisch verknüpftes <label>
+               (for / id) – ein placeholder allein reicht nicht. -->
+      <div class="field required">
+        <input type="text" placeholder="Vorname">
+      </div>
+      <div class="field required">
+        <input type="email" placeholder="E-Mail-Adresse">
+      </div>
+
+      <!-- (?) Das ist ein klickbares span statt eines echten Buttons. -->
+      <span class="fake-btn" onclick="alert('Abonniert!')">Abonnieren</span>
+
+      <!-- (?) Der Pflichtfeld-Hinweis darf nicht nur über die Farbe laufen.
+               Hier fehlt erklärender Text (z. B. „* Pflichtfeld"). -->
+      <p class="hint">Rot umrandete Felder bitte ausfüllen.</p>
+    </div>
+
+    <!-- (?) Zweitwichtigste Überschrift – passende Ebene wählen. -->
+    <div class="sub-title">Mehr erfahren</div>
+    <p class="desc">
+      Alles über Standort, Gießen und Umtopfen findest du in unserem Pflegeguide.
+      <!-- (?) „Hier klicken" sagt aus dem Kontext gerissen nichts aus.
+               Formuliere einen verständlichen Linktext. -->
+      <span class="fake-link" onclick="location.href='#'">Hier klicken</span>
+    </p>
+
+  </div>
+
+  <!-- (?) Welche Landmark gehört um die Fußzeile? -->
+  <div>
+    <footer>
+      <!-- (?) Dieses Bild ist rein dekorativ und soll von Screenreadern
+               ignoriert werden – es braucht ein leeres alt="". -->
+      <img src="https://picsum.photos/seed/leaf/40/40" width="20" height="20">
+      © 2026 Pflanzenglück
+    </footer>
+  </div>
+
+</body>
+</html>

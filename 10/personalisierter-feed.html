@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aufgabe — Personalisierter Feed</title>
+
+  <style>
+    /* ============================================================
+       AUFGABE (Session 10): Profiling & Hyper-Personalisierung
+
+       Hintergrund:
+       In der Vorlesung haben wir gesehen, wie aus IMPLIZITEN Signalen
+       (Klicks, Verweildauer …) ein Nutzerprofil – ein "digitaler
+       Zwilling" – entsteht und wie ein Feed sich daraufhin in Echtzeit
+       selbst umsortiert (N=1, content-based re-ranking).
+
+       Diese Seite zeigt einen Nachrichten-Feed mit vier Kategorien.
+       Das Layout, die Daten und das Rendern sind fertig.
+       EUER JOB ist die Profiling-Logik (siehe <script> unten).
+
+       Anforderungen:
+       1. Klick auf "Lesen" zählt als implizites Interesse:
+          Die passende Kategorie im Profil bekommt +1.
+       2. Das Profil wird in localStorage gespeichert und beim
+          Neuladen wieder geladen (Persistenz = "Wiedererkennung").
+       3. Der Feed sortiert sich nach Interesse: Artikel aus
+          Kategorien mit hohem Score wandern nach oben.
+       4. Das Transparenz-Panel rechts zeigt das Profil ("Warum sehe
+          ich das?") – Balken pro Kategorie.
+       5. Der "Profil zurücksetzen"-Button löscht das Profil wieder
+          (Kontrolle & Agency / DSGVO-Gedanke).
+       ============================================================ */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #faf9f7;
+      color: #1a1a1a;
+      line-height: 1.5;
+      padding: 3rem 1.5rem;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    header { grid-column: 1 / -1; margin-bottom: 1rem; }
+    h1 { font-size: 1.6rem; font-weight: 700; }
+    header p { color: #666; font-size: .95rem; margin-top: .35rem; }
+
+    .feed { display: flex; flex-direction: column; gap: .9rem; }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e6e4e0;
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .card .icon { font-size: 1.8rem; }
+    .card h3 { font-size: 1.05rem; margin-bottom: .2rem; }
+    .card .teaser { color: #666; font-size: .9rem; }
+
+    .tag {
+      display: inline-block;
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: #fff;
+      background: #888;
+      padding: .12rem .5rem;
+      border-radius: 999px;
+      margin-bottom: .4rem;
+    }
+    .tag.Tech     { background: #2563eb; }
+    .tag.Sport    { background: #16a34a; }
+    .tag.Kultur   { background: #9333ea; }
+    .tag.Politik  { background: #dc2626; }
+
+    .read-btn {
+      padding: .5rem 1rem;
+      font-size: .9rem;
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .read-btn:hover { background: #333; }
+
+    /* Transparenz-Panel ("Warum sehe ich das?") */
+    aside {
+      position: sticky;
+      top: 2rem;
+      background: #fff;
+      border: 1px solid #e6e4e0;
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    aside h2 { font-size: .95rem; margin-bottom: .25rem; }
+    aside .hint { font-size: .8rem; color: #888; margin-bottom: 1rem; }
+
+    .bar-row { margin-bottom: .7rem; }
+    .bar-row .label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .8rem;
+      margin-bottom: .2rem;
+    }
+    .bar-track {
+      height: 8px;
+      background: #f0efec;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: #1a1a1a;
+      border-radius: 999px;
+      transition: width .3s ease;
+    }
+
+    .reset-btn {
+      margin-top: 1rem;
+      width: 100%;
+      padding: .55rem;
+      font-size: .85rem;
+      background: none;
+      color: #dc2626;
+      border: 1px solid #f0c5c5;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .reset-btn:hover { background: #fef2f2; }
+
+    @media (max-width: 720px) {
+      .page { grid-template-columns: 1fr; }
+      aside { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Dein Feed</h1>
+      <p>Klick auf „Lesen“ – der Feed lernt aus deinem Verhalten und sortiert sich neu.</p>
+    </header>
+
+    <!-- Hier rendert renderFeed() die Artikel hinein -->
+    <main class="feed" id="feed"></main>
+
+    <aside>
+      <h2>Warum sehe ich das?</h2>
+      <p class="hint">Dein (implizit erlerntes) Interessenprofil:</p>
+      <!-- Hier rendert renderProfile() die Balken hinein -->
+      <div id="profile"></div>
+      <button class="reset-btn" id="resetBtn">Profil zurücksetzen</button>
+    </aside>
+  </div>
+
+  <script>
+    // ---- Fertige Bausteine: Daten & Rendering -------------------
+
+    const CATEGORIES = ['Tech', 'Sport', 'Kultur', 'Politik'];
+
+    const ARTICLES = [
+      { id: 1, category: 'Tech',    icon: '💻', title: 'Neues KI-Modell schreibt CSS',        teaser: 'Was bedeutet das für Designer?' },
+      { id: 2, category: 'Sport',   icon: '⚽', title: 'Dramatisches Finale am Wochenende',   teaser: 'Tor in der Nachspielzeit.' },
+      { id: 3, category: 'Kultur',  icon: '🎭', title: 'Theaterpremiere begeistert',          teaser: 'Kritiker sind sich einig.' },
+      { id: 4, category: 'Politik', icon: '🏛️', title: 'Neues Datenschutzgesetz geplant',     teaser: 'Strengere Regeln für Tracking.' },
+      { id: 5, category: 'Tech',    icon: '🔋', title: 'Akku-Durchbruch im Labor',            teaser: 'Doppelte Laufzeit versprochen.' },
+      { id: 6, category: 'Sport',   icon: '🏅', title: 'Rekord beim Marathon',                teaser: 'Bestzeit pulverisiert.' },
+      { id: 7, category: 'Kultur',  icon: '🎬', title: 'Überraschungshit im Kino',            teaser: 'Niemand hatte damit gerechnet.' },
+      { id: 8, category: 'Politik', icon: '🗳️', title: 'Wahlbeteiligung steigt',              teaser: 'Analyse der Zahlen.' },
+    ];
+
+    const STORAGE_KEY = 'feed-profil';
+
+    const feedEl    = document.getElementById('feed');
+    const profileEl = document.getElementById('profile');
+    const resetBtn  = document.getElementById('resetBtn');
+
+    // Baut die Artikel-Karten. Ruft beim Klick trackInterest(category) auf.
+    function renderFeed(articles) {
+      feedEl.innerHTML = '';
+      articles.forEach(a => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <span class="icon">${a.icon}</span>
+          <div>
+            <span class="tag ${a.category}">${a.category}</span>
+            <h3>${a.title}</h3>
+            <p class="teaser">${a.teaser}</p>
+          </div>
+          <button class="read-btn">Lesen</button>
+        `;
+        card.querySelector('.read-btn')
+            .addEventListener('click', () => trackInterest(a.category));
+        feedEl.appendChild(card);
+      });
+    }
+
+    // Baut die Balken im Transparenz-Panel aus dem Profil.
+    function renderProfile(profile) {
+      const max = Math.max(1, ...CATEGORIES.map(c => profile[c] || 0));
+      profileEl.innerHTML = '';
+      CATEGORIES.forEach(c => {
+        const score = profile[c] || 0;
+        const row = document.createElement('div');
+        row.className = 'bar-row';
+        row.innerHTML = `
+          <div class="label"><span>${c}</span><span>${score}</span></div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${(score / max) * 100}%"></div>
+          </div>
+        `;
+        profileEl.appendChild(row);
+      });
+    }
+
+
+    // ============================================================
+    // EUER CODE HIER
+    //
+    // Hinweis: Die Funktionen haben gerade nur Platzhalter-Rückgaben,
+    // damit die Seite lädt. Ersetzt die "// TODO"-Zeilen durch eure
+    // eigene Logik.
+    // ============================================================
+
+    // 1) Profil aus localStorage laden.
+    //    - localStorage.getItem(STORAGE_KEY) liefert einen String oder null.
+    //    - Mit JSON.parse(...) zurück in ein Objekt wandeln.
+    //    - Wenn nichts gespeichert ist: ein leeres Profil { Tech:0, Sport:0, ... }
+    //      zurückgeben (Tipp: über CATEGORIES gehen).
+    function loadProfile() {
+      // TODO: gespeichertes Profil laden statt immer leer zu starten.
+      const empty = {};
+      CATEGORIES.forEach(c => empty[c] = 0);
+      return empty;
+    }
+
+    // 2) Profil in localStorage speichern.
+    //    - JSON.stringify(profile) und localStorage.setItem(STORAGE_KEY, ...)
+    function saveProfile(profile) {
+      // TODO: profile in localStorage ablegen.
+    }
+
+    // 3) Artikel nach dem Profil sortieren (höchstes Interesse zuerst).
+    //    - Kopie der Liste sortieren: [...ARTICLES].sort(...)
+    //    - Vergleich: profile[b.category] - profile[a.category]
+    //    - sortierte Liste zurückgeben.
+    function sortByInterest(profile) {
+      // TODO: nach profile-Score sortieren. Aktuell unsortiert.
+      return [...ARTICLES];
+    }
+
+    // 4) Implizites Signal verarbeiten (wird bei jedem "Lesen"-Klick gerufen).
+    //    a) score der geklickten Kategorie im Profil um 1 erhöhen
+    //    b) Profil speichern (saveProfile)
+    //    c) Feed neu rendern – sortiert (renderFeed(sortByInterest(profile)))
+    //    d) Profil-Panel neu rendern (renderProfile(profile))
+    function trackInterest(category) {
+      // TODO: Interesse zählen, speichern und neu rendern.
+    }
+
+    // 5) Reset-Button: Profil löschen.
+    //    - localStorage.removeItem(STORAGE_KEY)
+    //    - danach Feed & Panel mit leerem Profil neu aufbauen (init()).
+    resetBtn.addEventListener('click', () => {
+      // TODO: gespeichertes Profil löschen und neu aufbauen.
+      init();
+    });
+
+
+    // ---- Startpunkt --------------------------------------------
+    // Lädt das Profil und baut Feed + Panel auf.
+    // (Funktioniert erst vollständig, wenn die Funktionen oben fertig sind.)
+    function init() {
+      const profile = loadProfile();
+      renderFeed(sortByInterest(profile));
+      renderProfile(profile);
+    }
+
+    init();
+  </script>
+</body>
+</html>

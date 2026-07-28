@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bonusaufgabe: Barrierefreie UI-Bausteine</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --text-color: #1f2937;
+            --bg-color: #f3f4f6;
+            --border-color: #d1d5db;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.5;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        main {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        section {
+            margin: 3rem 0;
+        }
+
+        /* === 1. FAQ AKKORDEON STYLES === */
+        .faq-item {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        
+        .faq-trigger {
+            background: #e5e7eb;
+            padding: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .faq-content {
+            padding: 1rem;
+            background: white;
+            display: none; /* Wird via JS gesteuert */
+        }
+
+        .faq-item.is-open .faq-content {
+            display: block;
+        }
+
+
+        /* === 2. TOAST STYLES === */
+        .shop-item {
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-add {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Toast Container */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            margin-top: 0.5rem;
+            /* Einfache Animation */
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        
+    </style>
+</head>
+<body>
+
+    <main>
+        <h1>Bonusaufgabe: Mit geschlossenen Augen 🎯</h1>
+        <p><strong>Status Quo:</strong> Die folgenden Komponenten funktionieren aktuell nur mit der Maus. Macht mindestens eine davon (idealerweise beide) vollständig barrierefrei.</p>
+        
+        <hr>
+
+        <section aria-labelledby="faq-heading">
+            <h2 id="faq-heading">Aufgabe 1: FAQ-Akkordeon</h2>
+            <p class="hint">Problem: Das aktuelle Element nutzt ein unsemantisches Div und reagiert nicht auf die Tastatur.</p>
+            
+            <div class="faq-container">
+                
+                <div class="faq-item">
+                    <div class="faq-trigger">Wie lauten die Abgabefristen?</div>
+                    <div class="faq-content">
+                        Die Lösung muss bis zum Ende des Semesters im Moodle-Forum als Link (CodePen, Glitch oder GitHub Pages) gepostet werden.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-trigger">Wie viele Bonuspunkte kann ich erreichen?</div>
+                    <div class="faq-content">
+                        Für eine vollständig barrierefreie Umsetzung kannst du bis zu 2 Bonuspunkte erhalten.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <hr>
+
+        <section aria-labelledby="shop-heading">
+            <h2 id="shop-heading">Aufgabe 2: „In den Warenkorb"-Bestätigung (Toast)</h2>
+            <p class="hint">Problem: Wenn der Button geklickt wird, erscheint zwar visuell ein Toast, ein Screenreader bekommt davon aber absolut nichts mit.</p>
+            
+            <div class="shop-item">
+                <div>
+                    <strong>Super-Duper Barrierefreiheit-Handbuch (E-Book)</strong>
+                    <p style="margin: 0; color: #6b7280; font-size: 0.875rem;">Preis: 0,00 €</p>
+                </div>
+                <div class="btn-add" id="addToCartBtn">In den Warenkorb</div>
+            </div>
+
+            <div class="toast-container" id="toastContainer">
+                </div>
+        </section>
+    </main>
+
+    <script>
+        // --- Skript für das Akkordeon ---
+        // 🛠 TODO: Das JS muss angepasst werden, da sich die HTML-Struktur (zu <button>) ändern wird.
+        // Tipp: Achtet darauf, bei Klick das Attribut 'aria-expanded' zwischen true und false zu toggeln!
+        const triggers = document.querySelectorAll('.faq-trigger');
+        
+        triggers.forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const item = trigger.closest('.faq-item');
+                item.classList.toggle('is-open');
+            });
+        });
+
+
+        // --- Skript für den Toast ---
+        const addToCartBtn = document.getElementById('addToCartBtn');
+        const toastContainer = document.getElementById('toastContainer');
+
+        addToCartBtn.addEventListener('click', () => {
+            // Erstelle das Toast-Element
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = '✓ Produkt wurde in den Warenkorb gelegt!';
+
+            // Ins Dashboard einfügen
+            toastContainer.appendChild(toast);
+
+            // Nach 4 Sekunden automatisch wieder entfernen
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        });
+    </script>
+</body>
+</html>

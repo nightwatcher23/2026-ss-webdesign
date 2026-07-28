@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!-- ===================================================================
+     STARTDATEI für Session 11 – „Frameworks" (React)
+
+     Diese eine Datei ist die Grundlage für ALLE drei Aufgaben:
+
+       Aufgabe 1 (Use)    – Den <script>-Block unten analysieren.
+                            Kein Code schreiben, nur lesen & verstehen.
+       Aufgabe 2 (Modify) – Die Komponente <LikeButton /> erweitern.
+       Aufgabe 3 (Create) – Eine neue Komponente <PricingCalculator />
+                            bauen und in #pricing-root rendern.
+
+     Besonderheit: React und Babel sind über CDN-Skripte eingebunden
+     (siehe <head>). Dadurch könnt ihr JSX direkt hier im <script>
+     schreiben – ohne Build-Werkzeuge. Einfach speichern & Browser neu
+     laden. (Diese Variante ist nur zum Lernen gedacht, nicht für echte
+     Produktiv-Websites.)
+     =================================================================== -->
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session 11 – Frameworks (React)</title>
+
+  <!-- React + ReactDOM: die eigentliche Bibliothek (Entwicklungs-Build).
+       Versionen sind fest gepinnt – sonst kann ein CDN-Update die Datei
+       unbemerkt zerschießen. -->
+  <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+  <!-- Babel: übersetzt das JSX im Browser zu normalem JavaScript.
+       Deshalb steht beim <script> unten type="text/babel".
+       WICHTIG: bewusst Babel 7. Babel 8 würde JSX in ein
+       import-Statement übersetzen, das in einem normalen (Nicht-Modul-)
+       Skript nicht läuft. -->
+  <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+
+  <style>
+    :root {
+      --bg:      #f7f7f5;
+      --surface: #ffffff;
+      --text:    #1a1a1a;
+      --muted:   #666;
+      --line:    #ddd;
+      --accent:  #2563eb;
+      --like:    #16a34a;
+      --warn:    #b45309;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: ui-monospace, 'Cascadia Code', 'Fira Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 3rem 1.5rem;
+    }
+
+    .wrap { max-width: 42rem; margin: 0 auto; }
+
+    header { margin-bottom: 2.5rem; }
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #555;
+    }
+    .lead { color: var(--muted); font-size: .9rem; margin-top: .5rem; }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+    section > h2 {
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    /* --- Stile für das Like-/Feedback-Widget --- */
+    .like-widget { text-align: center; }
+    .like-count {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: .75rem;
+    }
+    .btn {
+      font: inherit;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: .6rem 1.2rem;
+      font-weight: 700;
+      transition: border-color .15s, background .15s;
+    }
+    .btn:hover { border-color: #999; background: #f0f0ee; }
+    .btn-like:hover    { border-color: var(--like);   color: var(--like); }
+    .btn-dislike:hover { border-color: var(--warn);   color: var(--warn); }
+    .btn-row { display: flex; gap: .75rem; justify-content: center; }
+    .warning {
+      margin-top: 1rem;
+      color: var(--warn);
+      font-size: .85rem;
+    }
+
+    /* --- Stile für den Preis-Kalkulator (Aufgabe 3) --- */
+    .calc label { display: block; font-size: .9rem; margin-bottom: .5rem; }
+    .calc input[type="range"] { width: 100%; }
+    .calc .price {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 1rem 0;
+    }
+    .calc .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .9rem;
+    }
+
+    .placeholder {
+      color: #bbb;
+      font-size: .85rem;
+      text-align: center;
+      padding: 1rem;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Session 11 &mdash; Frameworks</h1>
+      <p class="lead">React über CDN. Bearbeitet den &lt;script&gt;-Block am Seitenende.</p>
+    </header>
+
+    <!-- AUFGABE 1 & 2: In diesen Container rendert React den <LikeButton />.
+         Das <div> selbst bleibt im HTML statisch leer – React füllt es. -->
+    <section>
+      <h2>Feedback zu dieser Sektion</h2>
+      <div id="like-root"></div>
+    </section>
+
+    <!-- AUFGABE 3: Hierher gehört euer <PricingCalculator />.
+         Aktuell noch leer – ihr rendert ihn unten im Skript hinein. -->
+    <section>
+      <h2>Preis-Kalkulator</h2>
+      <div id="pricing-root">
+        <p class="placeholder">Noch leer &mdash; hier rendert ihr in Aufgabe 3 euren &lt;PricingCalculator /&gt;.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===================================================================
+       EUER REACT-CODE liegt in einer eigenen Datei: session11.jsx
+       type="text/babel" sorgt dafür, dass das JSX darin verstanden wird.
+       Babel lädt die Datei per fetch – die Seite muss daher über einen
+       lokalen Server laufen (z. B. „Live Server"), nicht per Doppelklick
+       als file://.
+       =================================================================== -->
+  <script type="text/babel" src="session11.jsx"></script>
+</body>
+</html>
